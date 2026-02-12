@@ -147,9 +147,13 @@ def handle_missing_values(df, strategy='mean'):
     """
     if strategy == 'drop':
         return df.dropna()
-    elif strategy == 'mean':
-        return df.fillna(df.mean())
-    elif strategy == 'median':
-        return df.fillna(df.median())
+    elif strategy in ['mean', 'median']:
+        # Only fill numeric columns
+        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        if strategy == 'mean':
+            df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
+        else:
+            df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].median())
+        return df
     else:
         raise ValueError(f"Unknown strategy: {strategy}")
