@@ -25,9 +25,16 @@ from utils import (
 from models import (
     RidgeRegressionCV,
     PLSBaseline,
-    RandomForestPCA,
-    DeepLearningModel
+    RandomForestPCA
 )
+
+# Import deep learning models if available
+try:
+    from models import DeepLearningModel
+    TORCH_AVAILABLE = True
+except (ImportError, AttributeError):
+    TORCH_AVAILABLE = False
+    DeepLearningModel = None
 
 
 def parse_args():
@@ -146,6 +153,11 @@ def main():
         y_pred_scaled = model.predict(X_val_prep)
         
     elif args.model in ['conv1d', 'multitask']:
+        if not TORCH_AVAILABLE or DeepLearningModel is None:
+            print("Error: PyTorch is required for deep learning models.")
+            print("Install PyTorch: pip install torch")
+            sys.exit(1)
+        
         model = DeepLearningModel(
             model_type=args.model,
             input_size=X_train_prep.shape[1],
