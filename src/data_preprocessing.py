@@ -69,7 +69,7 @@ class SoilDataPreprocessor:
             fit: Whether to fit scalers (True for training data)
             
         Returns:
-            Dictionary with 'spectral' and 'spatial' feature arrays
+            Combined numpy array with spectral and spatial features
         """
         spectral_cols = self.identify_feature_columns(df)
         

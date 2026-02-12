@@ -49,7 +49,9 @@ class SpectralFeatureEngineer:
             spectral_data: Spectral measurements (n_samples, n_features)
             
         Returns:
-            Dictionary with original, first derivative, and second derivative
+            Dictionary with original, first derivative, and second derivative.
+            Note: First derivative has n_features-1 columns, second derivative 
+            has n_features-2 columns due to the nature of differentiation.
         """
         first_derivative = np.diff(spectral_data, axis=1)
         second_derivative = np.diff(first_derivative, axis=1)

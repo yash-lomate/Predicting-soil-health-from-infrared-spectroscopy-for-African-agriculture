@@ -64,14 +64,14 @@ def generate_sample_data(n_samples=100, n_features=3578, output_dir='data'):
     # P (Phosphorus) - typically 1-50 mg/kg
     p_features = spectral_data[:, min(chunk_size, n_features-1):min(2*chunk_size, n_features)]
     df['P'] = (
-        15 * (p_features.mean(axis=1) if p_features.size > 0 else 0) +
+        15 * (p_features.mean(axis=1) if p_features.size > 0 else np.zeros(n_samples)) +
         np.random.randn(n_samples) * 8 + 20
     ).clip(1, 100)
     
     # pH - typically 4.5-8.5
     ph_features = spectral_data[:, min(2*chunk_size, n_features-1):min(3*chunk_size, n_features)]
     df['pH'] = (
-        0.8 * (ph_features.mean(axis=1) if ph_features.size > 0 else 0) +
+        0.8 * (ph_features.mean(axis=1) if ph_features.size > 0 else np.zeros(n_samples)) +
         0.3 * df['Latitude'] / 40 +
         np.random.randn(n_samples) * 0.5 + 6.5
     ).clip(4.5, 8.5)
@@ -79,7 +79,7 @@ def generate_sample_data(n_samples=100, n_features=3578, output_dir='data'):
     # SOC (Soil Organic Carbon) - typically 0.1-5%
     soc_features = spectral_data[:, min(3*chunk_size, n_features-1):min(4*chunk_size, n_features)]
     df['SOC'] = (
-        1.5 * (soc_features.mean(axis=1) if soc_features.size > 0 else 0) +
+        1.5 * (soc_features.mean(axis=1) if soc_features.size > 0 else np.zeros(n_samples)) +
         0.1 * (30 - df['Depth']) / 30 +
         np.random.randn(n_samples) * 0.8 + 1.5
     ).clip(0.1, 8)
@@ -87,7 +87,7 @@ def generate_sample_data(n_samples=100, n_features=3578, output_dir='data'):
     # Sand - typically 0-100%
     sand_features = spectral_data[:, min(4*chunk_size, n_features-1):]
     df['Sand'] = (
-        25 * (sand_features.mean(axis=1) if sand_features.size > 0 else 0) +
+        25 * (sand_features.mean(axis=1) if sand_features.size > 0 else np.zeros(n_samples)) +
         5 * df['Latitude'] / 40 +
         np.random.randn(n_samples) * 15 + 50
     ).clip(0, 100)
