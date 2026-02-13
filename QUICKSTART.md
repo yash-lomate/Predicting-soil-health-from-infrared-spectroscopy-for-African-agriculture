@@ -1,196 +1,5 @@
 # Quick Start Guide
 
-## Setup (5 minutes)
-
-```bash
-# 1. Clone repository
-git clone https://github.com/yash-lomate/Predicting-soil-health-from-infrared-spectroscopy-for-African-agriculture.git
-cd Predicting-soil-health-from-infrared-spectroscopy-for-African-agriculture
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Download data from Kaggle (optional - or use synthetic data)
-# Visit: https://www.kaggle.com/c/afsis-soil-properties/data
-# Place training.csv in data/ directory
-```
-
-## Quick Test (2 minutes)
-
-```bash
-# Generate synthetic data
-python scripts/generate_synthetic_data.py --n_samples 500
-
-# Run tests
-python scripts/test_implementation.py
-
-# Train a model
-python scripts/train.py --train_path data/synthetic_training.csv --model ridge
-```
-
-## Common Commands
-
-### Train Different Models
-
-```bash
-# Ridge Regression (fastest, good baseline)
-python scripts/train.py --train_path data/training.csv --model ridge
-
-# PLS (chemometrics standard)
-python scripts/train.py --train_path data/training.csv --model pls
-
-# Random Forest (handles non-linearity)
-python scripts/train.py --train_path data/training.csv --model rf
-
-# 1D CNN (requires PyTorch, best performance)
-python scripts/train.py --train_path data/training.csv --model conv1d --epochs 100
-
-# Multi-Task Network (requires PyTorch)
-python scripts/train.py --train_path data/training.csv --model multitask --epochs 100
-```
-
-### Customize Training
-
-```bash
-# Change validation split
-python scripts/train.py --train_path data/training.csv --model ridge --test_size 0.3
-
-# Change preprocessing
-python scripts/train.py --train_path data/training.csv --model pls --preprocessing snv
-
-# Change output directory
-python scripts/train.py --train_path data/training.csv --model rf --output_dir my_results
-
-# Adjust deep learning settings
-python scripts/train.py --train_path data/training.csv --model conv1d \
-    --epochs 200 --batch_size 64
-```
-
-## Python API Usage
-
-### Basic Example
-
-```python
-import sys
-sys.path.insert(0, 'src')
-
-from preprocessing import preprocess_pipeline
-from utils import load_afsis_data, standardize_targets, evaluate_predictions
-from models import RidgeRegressionCV
-
-# Load data
-X_train, y_train = load_afsis_data('data/training.csv')
-
-# Split (in practice, use geographic splitting)
-from sklearn.model_selection import train_test_split
-X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2)
-
-# Preprocess
-X_train = preprocess_pipeline(X_train, methods=['snv', 'savgol'])
-X_val = preprocess_pipeline(X_val, methods=['snv', 'savgol'])
-
-# Standardize targets
-y_train_scaled, y_val_scaled, scalers = standardize_targets(y_train, y_val)
-
-# Train model
-model = RidgeRegressionCV(cv=5)
-model.fit(X_train, y_train_scaled)
-
-# Predict
-y_pred_scaled = model.predict(X_val)
-
-# Inverse transform
-from utils import inverse_transform_targets
-y_pred = inverse_transform_targets(y_pred_scaled, scalers)
-
-# Evaluate
-results = evaluate_predictions(y_val, y_pred, ['Ca', 'P', 'pH', 'SOC', 'Sand'])
-print(results)
-```
-
-### Using Deep Learning
-
-```python
-from models import DeepLearningModel
-
-# Create model
-model = DeepLearningModel(
-    model_type='conv1d',  # or 'multitask'
-    input_size=3578,
-    n_targets=5,
-    epochs=100,
-    batch_size=32
-)
-
-# Train
-model.fit(X_train, y_train_scaled, X_val, y_val_scaled)
-
-# Predict
-y_pred_scaled = model.predict(X_val)
-
-# Save model
-model.save('models/my_cnn_model.pth')
-
-# Load model
-model.load('models/my_cnn_model.pth')
-```
-
-## Jupyter Notebook
-
-```bash
-# Start Jupyter
-jupyter notebook
-
-# Open: notebooks/soil_property_prediction.ipynb
-# Follow the interactive tutorial
-```
-
-## Common Issues
-
-### PyTorch Not Available
-```bash
-# Install PyTorch (CPU version)
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-
-# Or use baseline models only (Ridge, PLS, RF)
-# They work without PyTorch
-```
-
-### Data File Not Found
-```bash
-# Create data directory
-mkdir -p data
-
-# Use synthetic data for testing
-python scripts/generate_synthetic_data.py --output data/training.csv
-```
-
-### Out of Memory
-```bash
-# Reduce batch size for deep learning
-python scripts/train.py --model conv1d --batch_size 16
-
-# Use fewer PCA components for RF
-# Edit baseline_models.py: n_components=20
-```
-
-## Understanding Results
-
-### RPD (Residual Prediction Deviation)
-- **RPD ≥ 3.0**: Excellent - Use for quantitative predictions
-- **RPD ≥ 2.0**: Good - Suitable for screening
-- **RPD ≥ 1.4**: Fair - Rough estimates only
-- **RPD < 1.4**: Poor - Not reliable
-
-### RMSE (Root Mean Squared Error)
-- Lower is better
-- Compare with standard deviation of targets
-- RMSE < 0.5 × SD is generally good
-
-### Example Output
-```
-Target          RMSE         MAE          R2           RPD         
-================================================================================
 Ca              3000.0000    2000.0000    0.8500       2.5000      # Good
 P               15.0000      10.0000      0.7500       2.2000      # Good
 pH              0.5000       0.3500       0.8000       2.6000      # Good
@@ -234,3 +43,129 @@ Mean            605.1000     403.3300     0.8100       2.5200      # Good
 8. ✓ Consider ensemble methods
 
 Happy soil mapping! 🌍
+This guide will help you get started with the Soil Property Prediction system.
+
+## 1. Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yash-lomate/Predicting-soil-health-from-infrared-spectroscopy-for-African-agriculture.git
+cd Predicting-soil-health-from-infrared-spectroscopy-for-African-agriculture
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Or install as a package
+pip install -e .
+```
+
+## 2. Get the Data
+
+1. Visit the Kaggle competition: https://www.kaggle.com/c/afsis-soil-properties/data
+2. Download `train.csv` and `test.csv`
+3. Place them in the `data/` directory
+
+## 3. Train Your First Model
+
+### Basic Training
+```bash
+python train.py --train_data data/train.csv
+```
+
+This will:
+- Load and preprocess the data
+- Train a Random Forest model (default)
+- Evaluate on a validation set
+- Save the model to `models/random_forest_model.pkl`
+
+### Advanced Training Options
+
+**Train with XGBoost:**
+```bash
+python train.py --train_data data/train.csv --model xgboost --n_estimators 200
+```
+
+**Use PCA for faster training:**
+```bash
+python train.py --train_data data/train.csv --use_pca --n_components 100
+```
+
+**Train an ensemble:**
+```bash
+python train.py --train_data data/train.csv --model ensemble
+```
+
+## 4. Make Predictions
+
+```bash
+python predict.py \
+    --input data/test.csv \
+    --model models/random_forest_model.pkl \
+    --preprocessor models/preprocessor.pkl \
+    --output predictions.csv
+```
+
+## 5. Explore with Jupyter
+
+```bash
+jupyter notebook notebooks/example_usage.ipynb
+```
+
+## Expected Output
+
+After training, you'll see:
+- Overall metrics (RMSE, MAE, R²) across all targets
+- Per-target metrics for each soil property (Ca, P, pH, SOC, Sand)
+- Saved model files in `models/` directory
+
+Example output:
+```
+Model Evaluation: random_forest
+
+Overall Metrics:
+  RMSE: 2.4532
+  MAE:  1.8234
+  R2:   0.7845
+
+Per-Target Metrics:
+
+  Ca:
+    RMSE: 3.2145
+    MAE:  2.4532
+    R2:   0.7234
+...
+```
+
+## Tips
+
+1. **Start Simple**: Use Random Forest with default parameters first
+2. **Use PCA**: If training is slow, enable PCA with 50-100 components
+3. **Ensemble**: For best results, use ensemble mode (slower but more accurate)
+4. **Scaling**: Feature scaling is enabled by default (recommended)
+
+## Troubleshooting
+
+**Data not found?**
+- Make sure `train.csv` is in the `data/` directory
+- Check file permissions
+
+**Out of memory?**
+- Use PCA: `--use_pca --n_components 50`
+- Reduce `n_estimators` for tree-based models
+
+**Poor performance?**
+- Try different models: `--model xgboost` or `--model ensemble`
+- Increase `n_estimators`: `--n_estimators 200`
+
+## Next Steps
+
+- Experiment with different models and hyperparameters
+- Try feature engineering techniques in `src/feature_engineering.py`
+- Explore the Jupyter notebook for visualizations
+- Submit predictions to Kaggle!
+
+## Getting Help
+
+- Check the main [README.md](README.md) for detailed documentation
+- Review code in `src/` directory
+- Open an issue on GitHub

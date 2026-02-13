@@ -4,9 +4,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
-venv/
-ENV/
 build/
 develop-eggs/
 dist/
@@ -23,22 +20,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb_checkpoints/
-
-# Data files
-data/
-*.csv
-*.zip
-*.tar.gz
-
-# Models
-models/
-*.pkl
-*.h5
-*.pth
-*.pt
+# Virtual environments
+venv/
+ENV/
+env/
 
 # IDEs
 .vscode/
@@ -47,14 +32,27 @@ models/
 *.swo
 *~
 
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data files
+data/*.csv
+data/*.zip
+*.csv
+*.tsv
+
+# Model files
+models/*.pkl
+models/*.h5
+models/*.json
+
+# Logs
+*.log
+
 # OS
 .DS_Store
 Thumbs.db
 
-# Logs
-logs/
-*.log
-
-# Results
-results/
-outputs/
+# Temporary files
+/tmp/
+*.tmp
