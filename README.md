@@ -189,9 +189,7 @@ Metrics are reported both:
 ## Example Output
 
 ```
-======================================================================
 Africa Soil Property Prediction - Multi-Target Regression
-======================================================================
 
 [1] Initializing data preprocessor...
 [2] Loading data from data/train.csv...
@@ -212,9 +210,7 @@ Training data shape: X=(925, 3581), y=(925, 5)
 Training completed.
 
 --- Validation Set Performance ---
-============================================================
 Model Evaluation: random_forest
-============================================================
 
 Overall Metrics:
   RMSE: 2.4532

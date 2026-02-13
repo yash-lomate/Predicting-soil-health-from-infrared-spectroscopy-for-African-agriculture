@@ -1,5 +1,48 @@
 # Quick Start Guide
 
+Ca              3000.0000    2000.0000    0.8500       2.5000      # Good
+P               15.0000      10.0000      0.7500       2.2000      # Good
+pH              0.5000       0.3500       0.8000       2.6000      # Good
+SOC             0.4000       0.3000       0.8200       2.8000      # Good
+Sand            8.0000       6.0000       0.8500       2.5000      # Good
+Mean            605.1000     403.3300     0.8100       2.5200      # Good
+```
+
+## File Locations
+
+- **Results**: `results/` (CSV files, model predictions)
+- **Models**: `results/*.pth` (PyTorch models)
+- **Logs**: Console output
+- **Data**: `data/` (training/test CSV files)
+
+## Tips for Best Results
+
+1. **Always preprocess**: SNV + Savitzky-Golay is a good default
+2. **Start simple**: Ridge Regression is fast and interpretable
+3. **Use geographic splitting**: Avoid data leakage from nearby samples
+4. **Standardize targets**: Essential for multi-target regression
+5. **Try ensembles**: Average predictions from multiple models
+6. **Tune hyperparameters**: Use cross-validation
+
+## Getting Help
+
+- Check `README.md` for detailed documentation
+- See `IMPLEMENTATION.md` for technical details
+- Open an issue on GitHub for bugs
+- Review example notebook for usage patterns
+
+## Next Steps
+
+1. ✓ Run quick test with synthetic data
+2. ✓ Download real AfSIS data
+3. ✓ Train baseline models
+4. ✓ Evaluate results with RPD metric
+5. ✓ Try advanced models if baseline RPD < 2.0
+6. ✓ Experiment with preprocessing methods
+7. ✓ Tune hyperparameters
+8. ✓ Consider ensemble methods
+
+Happy soil mapping! 🌍
 This guide will help you get started with the Soil Property Prediction system.
 
 ## 1. Installation
@@ -77,9 +120,7 @@ After training, you'll see:
 
 Example output:
 ```
-============================================================
 Model Evaluation: random_forest
-============================================================
 
 Overall Metrics:
   RMSE: 2.4532
